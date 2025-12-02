@@ -2403,6 +2403,10 @@ extern bool IsPRSwap;
 extern bool PolicyIsDFP;
 static bool dwc3_vbus_boost_enabled(void);
 
+bool IsPRSwap = false;
+bool PolicyIsDFP = false;
+
+
 /**
  * dwc3_ext_event_notify - callback to handle events from external transceiver
  *

@@ -104,6 +104,15 @@
 #if defined(WLAN_FEATURE_11W) && (defined(HIF_USB) || defined(HIF_SDIO) || defined(CONFIG_NON_QC_PLATFORM_PCI))
 #define CMAC_TLEN 8 /* CMAC TLen = 64 bits (8 octets) */
 
+
+
+
+
+
+
+
+
+
 static inline void xor_128(const u8 *a, const u8 *b, u8 *out)
 {
         u8 i;

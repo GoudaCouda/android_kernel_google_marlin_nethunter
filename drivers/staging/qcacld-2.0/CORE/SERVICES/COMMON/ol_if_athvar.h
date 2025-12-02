@@ -30,7 +30,7 @@
  */
 #ifndef _DEV_OL_ATH_ATHVAR_H
 #define _DEV_OL_ATH_ATHVAR_H
-
+#include <net/cnss.h>
 #include <osdep.h>
 #include <a_types.h>
 #include <osapi_linux.h>

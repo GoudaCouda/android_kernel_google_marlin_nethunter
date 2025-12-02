@@ -27,8 +27,10 @@
 
 #ifndef _WCNSS_API_H_
 #define _WCNSS_API_H_
-
-
+#include <crypto/algapi.h> // <-- ADD THIS LINE
+#include <crypto/hash.h>   // <-- ADD THIS LINE
+#include <linux/crypto.h>
+#define CMAC_TLEN 16
 /*
  * Do nothing for non ISOC
  */
@@ -112,5 +114,24 @@ static inline int free_riva_power_on_lock(char *driver_name)
         return 0;
 }
 
+struct crypto_cipher;
+extern int crypto_cipher_cmac_calc(struct crypto_cipher *tfm, const u8 *data,
+                                 unsigned int len, u8 *mic);
 
+static inline int
+wcnss_wlan_cmac_calc_mic(struct crypto_cipher *tfm, u8 *m, u32 len, u8 *mic)
+{
+	return crypto_cipher_cmac_calc(tfm, m, len, mic);
+}
+static inline void
+wcnss_wlan_crypto_free_cipher(struct crypto_cipher *tfm)
+{
+	crypto_free_cipher(tfm);
+}
+
+static inline struct crypto_cipher *
+wcnss_wlan_crypto_alloc_cipher(const char *alg_name, u32 type, u32 mask)
+{
+	return crypto_alloc_cipher(alg_name, type, mask);
+}
 #endif	/* #ifndef _WCNSS_API_H_ */

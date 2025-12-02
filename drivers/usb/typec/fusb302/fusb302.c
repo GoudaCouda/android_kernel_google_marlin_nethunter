@@ -46,8 +46,8 @@
 
 #define PM_WAKE_DELAY_MS 2000
 
-bool IsPRSwap;
-bool PolicyIsDFP;
+static bool IsPRSwap;
+static bool PolicyIsDFP;
 bool PolicyIsSource;
 
 static void *fusb302_log;

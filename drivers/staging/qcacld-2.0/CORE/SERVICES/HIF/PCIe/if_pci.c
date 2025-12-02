@@ -1545,7 +1545,7 @@ static void hif_pci_pm_runtime_post_exit(struct hif_pci_softc *sc)
  *
  * Return: void
  */
-static void hif_pci_pm_runtime_ssr_post_exit(struct hif_pci_softc *sc)
+static __maybe_unused void hif_pci_pm_runtime_ssr_post_exit(struct hif_pci_softc *sc)
 {
 	struct hif_pm_runtime_context *ctx, *tmp;
 

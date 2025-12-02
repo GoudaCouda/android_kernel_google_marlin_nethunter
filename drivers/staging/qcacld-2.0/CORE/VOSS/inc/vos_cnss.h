@@ -38,20 +38,25 @@
 #include <linux/jiffies.h>
 #include <linux/workqueue.h>
 #include <linux/sched.h>
-
+#ifndef CNSS_BUS_WIDTH_TYPE_DEFINED
 enum cnss_bus_width_type {
 	CNSS_BUS_WIDTH_NONE,
 	CNSS_BUS_WIDTH_LOW,
 	CNSS_BUS_WIDTH_MEDIUM,
 	CNSS_BUS_WIDTH_HIGH
 };
-
+#define CNSS_BUS_WIDTH_TYPE_DEFINED
+#endif
+#ifndef CNSS_CC_SRC_DEFINED
 enum cnss_cc_src {
 	CNSS_SOURCE_CORE,
 	CNSS_SOURCE_11D,
 	CNSS_SOURCE_USER
 };
+#define CNSS_CC_SRC_DEFINED
+#endif
 #ifdef HIF_PCI
+struct pci_dev;
 static inline void vos_wlan_pci_link_down(void){ return; }
 static inline int vos_pcie_shadow_control(struct pci_dev *dev, bool enable)
 {
@@ -664,6 +669,7 @@ static inline int vos_unregister_oob_irq_handler(void *pm_oob)
 {
 	return -ENOSYS;
 }
+#define CNSS_SOURCE_CORE_DEFINED_IN_VOSS
 #endif /* END CONFIG_CNSS && HIF_SDIO */
 #endif /* CONFIG_CNSS */
 

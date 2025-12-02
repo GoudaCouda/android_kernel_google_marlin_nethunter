@@ -1,5 +1,5 @@
 KERNEL_SRC ?= /lib/modules/$(shell uname -r)/build
-
+ccflags-y += -Wno-error
 KBUILD_OPTIONS := WLAN_ROOT=$(PWD)
 KBUILD_OPTIONS += MODNAME?=wlan
 

@@ -77,7 +77,7 @@ struct hci_uart {
 	struct hci_dev		*hdev;
 	unsigned long		flags;
 	unsigned long		hdev_flags;
-
+	spinlock_t          rx_lock;
 	struct work_struct	init_ready;
 	struct work_struct	write_work;
 

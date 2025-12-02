@@ -41,7 +41,7 @@
 #undef	VERBOSE_DEBUG
 
 #include "rndis.h"
-
+#define KBUILD_MODNAME "rndis"
 int rndis_ul_max_pkt_per_xfer_rcvd;
 module_param(rndis_ul_max_pkt_per_xfer_rcvd, int, S_IRUGO);
 MODULE_PARM_DESC(rndis_ul_max_pkt_per_xfer_rcvd,

@@ -92,6 +92,19 @@ struct apr_svc_ch_dev {
 	void               *priv;
 	unsigned           channel_state;
 	bool               if_remote_intent_ready;
+	spinlock_t         lock;       /* Fixes: no member named 'lock' */
+    	void               *ch;        /* Fixes: no member named 'ch' */
+    	void               *data;      /* Fixes: no member named 'data' */
+    	int                smd_state;  /* Fixes: no member named 'smd_state' */
+    	int                dest_state; /* Fixes: no member named 'dest_state' */
+
+	wait_queue_head_t  dest;
+
+
+
+
+
+
 };
 #else
 static inline int apr_tal_start_rx_rt(struct apr_svc_ch_dev *apr_ch)

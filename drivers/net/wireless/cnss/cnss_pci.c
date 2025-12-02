@@ -567,6 +567,12 @@ out:
 	return ret;
 }
 
+int cnss_get_fw_files_for_target(struct cnss_fw_files *pfw_files, 
+                                 u32 target_type, u32 target_version)
+{
+    /* Return 0 to signal success to the caller */
+    return 0;
+}
 static void cnss_wlan_gpio_set(struct cnss_wlan_gpio_info *info, bool state)
 {
 #ifndef CONFIG_MSM_GVM_QUIN
@@ -3851,4 +3857,4 @@ module_init(cnss_initialize);
 module_exit(cnss_exit);
 
 MODULE_LICENSE("GPL v2");
-MODULE_DESCRIPTION(DEVICE "CNSS Driver");
+MODULE_DESCRIPTION("CNSS Driver");

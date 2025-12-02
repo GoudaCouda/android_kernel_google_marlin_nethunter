@@ -17,33 +17,58 @@
 #include <linux/pci.h>
 #include <linux/mmc/sdio_func.h>
 
-#ifdef CONFIG_CNSS
+
 #define CNSS_MAX_FILE_NAME	20
 #define PINCTRL_SLEEP  0
 #define PINCTRL_ACTIVE 1
-
+#ifndef CNSS_RUNTIME_REQUEST_DEFINED
+#define CNSS_RUNTIME_REQUEST_DEFINED
+enum cnss_runtime_request {
+	CNSS_PM_RUNTIME_GET,
+	CNSS_PM_RUNTIME_PUT,
+	CNSS_PM_RUNTIME_MARK_LAST_BUSY,
+	CNSS_PM_RUNTIME_RESUME,
+	CNSS_PM_RUNTIME_PUT_NOIDLE,
+	CNSS_PM_REQUEST_RESUME,
+	CNSS_PM_RUNTIME_PUT_AUTO,
+	CNSS_PM_GET_NORESUME,
+};
+#endif
+#ifndef CNSS_DRIVER_STATUS_DEFINED
+#define CNSS_DRIVER_STATUS_DEFINED
+enum cnss_driver_status {
+	CNSS_UNINITIALIZED,
+	CNSS_INITIALIZED,
+	CNSS_LOAD_UNLOAD,
+	CNSS_RECOVERY,
+	CNSS_FW_DOWN,
+	CNSS_SSR_FAIL,
+};
+#endif
+#ifndef CNSS_BUS_WIDTH_TYPE_DEFINED
+#define CNSS_BUS_WIDTH_TYPE_DEFINED
 enum cnss_bus_width_type {
 	CNSS_BUS_WIDTH_NONE,
 	CNSS_BUS_WIDTH_LOW,
 	CNSS_BUS_WIDTH_MEDIUM,
 	CNSS_BUS_WIDTH_HIGH
 };
-
-/* FW image files */
-struct cnss_fw_files {
-	char image_file[CNSS_MAX_FILE_NAME];
-	char board_data[CNSS_MAX_FILE_NAME];
-	char otp_data[CNSS_MAX_FILE_NAME];
-	char utf_file[CNSS_MAX_FILE_NAME];
-	char utf_board_data[CNSS_MAX_FILE_NAME];
-	char epping_file[CNSS_MAX_FILE_NAME];
-	char evicted_data[CNSS_MAX_FILE_NAME];
+#endif
+#ifndef CNSS_CC_SRC_DEFINED
+#define CNSS_CC_SRC_DEFINED
+enum cnss_cc_src {
+        CNSS_SOURCE_CORE,
+        CNSS_SOURCE_11D,
+        CNSS_SOURCE_USER
 };
-
+#endif
+#ifndef CNSS_WLAN_DRIVER_DEFINED
+#define CNSS_WLAN_DRIVER_DEFINED
 struct cnss_wlan_runtime_ops {
-	int (*runtime_suspend)(struct pci_dev *pdev);
-	int (*runtime_resume)(struct pci_dev *pdev);
+    int (*runtime_suspend)(struct pci_dev *pdev);
+    int (*runtime_resume)(struct pci_dev *pdev);
 };
+
 
 struct cnss_wlan_driver {
 	char *name;
@@ -58,15 +83,25 @@ struct cnss_wlan_driver {
 	void (*update_status)(struct pci_dev *pdev, uint32_t status);
 	struct cnss_wlan_runtime_ops *runtime_ops;
 	const struct pci_device_id *id_table;
-};
 
-/*
- * codeseg_total_bytes: Total bytes across all the codesegment blocks
- * num_codesegs: No of Pages used
- * codeseg_size: Size of each segment. Should be power of 2 and multiple of 4K
- * codeseg_size_log2: log2(codeseg_size)
- * codeseg_busaddr: Physical address of the DMAble memory;4K aligned
- */
+};
+#endif
+
+
+#ifndef CNSS_FW_FILES_DEFINED
+#define CNSS_FW_FILES_DEFINED
+struct cnss_fw_files {
+	char image_file[CNSS_MAX_FILE_NAME];
+	char board_data[CNSS_MAX_FILE_NAME];
+	char otp_data[CNSS_MAX_FILE_NAME];
+	char utf_file[CNSS_MAX_FILE_NAME];
+	char utf_board_data[CNSS_MAX_FILE_NAME];
+	char eboard_data[CNSS_MAX_FILE_NAME];
+	char epping_file[CNSS_MAX_FILE_NAME];
+	char evicted_data[CNSS_MAX_FILE_NAME];
+};
+#endif
+
 
 #define CODESWAP_MAX_CODESEGS 16
 struct codeswap_codeseg_info {
@@ -77,6 +112,11 @@ struct codeswap_codeseg_info {
 	void *codeseg_busaddr[CODESWAP_MAX_CODESEGS];
 };
 
+/* FW image files */
+extern void wcnss_prealloc_check_memory_leak(void);
+extern int wcnss_pre_alloc_reset(void);
+extern int cnss_get_codeswap_struct(struct codeswap_codeseg_info *swap_seg);
+extern int cnss_get_fw_files_for_target(struct cnss_fw_files *pfw_files, u32 target_type, u32 target_version);
 struct image_desc_info {
 	dma_addr_t fw_addr;
 	u32 fw_size;
@@ -84,36 +124,38 @@ struct image_desc_info {
 	u32 bdata_size;
 };
 
-/* platform capabilities */
+
+
+#ifndef CNSS_PLATFORM_CAP_FLAG_DEFINED
 enum cnss_platform_cap_flag {
 	CNSS_HAS_EXTERNAL_SWREG = 0x01,
 	CNSS_HAS_UART_ACCESS = 0x02,
 };
+#define CNSS_PLATFORM_CAP_FLAG_DEFINED
 
+#endif
 struct cnss_platform_cap {
 	u32 cap_flag;
+	struct cnss_fw_files *fw_files;
 };
+
+#ifdef CONFIG_CNSS
+/*
+ * codeseg_total_bytes: Total bytes across all the codesegment blocks
+ * num_codesegs: No of Pages used
+ * codeseg_size: Size of each segment. Should be power of 2 and multiple of 4K
+ * codeseg_size_log2: log2(codeseg_size)
+ * codeseg_busaddr: Physical address of the DMAble memory;4K aligned
+ */
+
+
+
+
+
+/* platform capabilities */
 
 /* WLAN driver status, keep it aligned with cnss2 */
-enum cnss_driver_status {
-	CNSS_UNINITIALIZED,
-	CNSS_INITIALIZED,
-	CNSS_LOAD_UNLOAD,
-	CNSS_RECOVERY,
-	CNSS_FW_DOWN,
-	CNSS_SSR_FAIL,
-};
 
-enum cnss_runtime_request {
-	CNSS_PM_RUNTIME_GET,
-	CNSS_PM_RUNTIME_PUT,
-	CNSS_PM_RUNTIME_MARK_LAST_BUSY,
-	CNSS_PM_RUNTIME_RESUME,
-	CNSS_PM_RUNTIME_PUT_NOIDLE,
-	CNSS_PM_REQUEST_RESUME,
-	CNSS_PM_RUNTIME_PUT_AUTO,
-	CNSS_PM_GET_NORESUME,
-};
 
 extern int cnss_get_fw_image(struct image_desc_info *image_desc_info);
 extern void cnss_runtime_init(struct device *dev, int auto_delay);
@@ -191,17 +233,14 @@ extern int cnss_pcie_set_wlan_mac_address(const u8 *in, uint32_t len);
 extern u8 *cnss_get_wlan_mac_address(struct device *dev, uint32_t *num);
 extern int cnss_sdio_set_wlan_mac_address(const u8 *in, uint32_t len);
 
-enum cnss_cc_src {
-	CNSS_SOURCE_CORE,
-	CNSS_SOURCE_11D,
-	CNSS_SOURCE_USER
-};
+
 
 enum {
 	CNSS_RESET_SOC = 0,
 	CNSS_RESET_SUBSYS_COUPLED,
 	CNSS_RESET_LEVEL_MAX
 };
+
 extern int cnss_get_restart_level(void);
 
 struct cnss_sdio_wlan_driver {
