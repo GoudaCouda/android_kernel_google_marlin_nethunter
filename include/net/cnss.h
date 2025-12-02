@@ -113,7 +113,9 @@ struct codeswap_codeseg_info {
 };
 
 /* FW image files */
+#if defined(CONFIG_WCNSS_MEM_PRE_ALLOC) && defined(CONFIG_SLUB_DEBUG)
 extern void wcnss_prealloc_check_memory_leak(void);
+#endif
 extern int wcnss_pre_alloc_reset(void);
 extern int cnss_get_codeswap_struct(struct codeswap_codeseg_info *swap_seg);
 extern int cnss_get_fw_files_for_target(struct cnss_fw_files *pfw_files, u32 target_type, u32 target_version);

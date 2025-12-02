@@ -566,13 +566,14 @@ static int cnss_wlan_bootstrap_gpio_init(void)
 out:
 	return ret;
 }
-
+/*
 int cnss_get_fw_files_for_target(struct cnss_fw_files *pfw_files, 
                                  u32 target_type, u32 target_version)
 {
-    /* Return 0 to signal success to the caller */
+    /* Return 0 to signal success to the caller *
     return 0;
 }
+*/
 static void cnss_wlan_gpio_set(struct cnss_wlan_gpio_info *info, bool state)
 {
 #ifndef CONFIG_MSM_GVM_QUIN
